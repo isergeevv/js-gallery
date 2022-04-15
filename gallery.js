@@ -213,7 +213,7 @@ class Gallery {
 }
 
 $(document).ready(() => {
-    new Gallery({
+    const gallery = new Gallery({
         selector: '.js-gallery',
         main_image: true,
         extra_images: true,
