@@ -54,7 +54,7 @@ class Gallery {
                     return;
                 }
                 const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modalExtraImagesDiv);
-                target.scrollLeft(target.scrollLeft() + ((this.lastDragX > e.pageX) ? 1 : -1));
+                target.scrollLeft(target.scrollLeft() + ((this.lastDragX > e.pageX) ? 2 : -2));
                 this.lastDragX = e.pageX;
                 e.preventDefault();
             });
