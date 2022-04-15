@@ -1,0 +1,48 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.js-gallery {
+    width: 800px;
+    height: 800px;
+}
+
+.js-gallery .jsg-main-image {
+    width: 100%;
+    height: 600px;
+    padding: 10px;
+}
+
+.js-gallery .jsg-main-image img {
+    width: 100%;
+    height: 100%;
+}
+
+.js-gallery .jsg-extra-images {
+    height: 200px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    padding: 5px;
+}
+
+.js-gallery .jsg-extra-images .jsg-extra-image {
+    height: 100%;
+}
+
+.js-gallery .jsg-extra-images .jsg-extra-image img {
+    width: auto;
+    height: 100%;
+    padding: 5px;
+}
