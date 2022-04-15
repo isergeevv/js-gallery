@@ -10,6 +10,16 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <div class="js-controls">
+            <button id="toggleMainImage" onclick="change(0)" class="on">Toggle Main Image</button>
+            <button id="toggleExtraImages" onclick="change(1)" class="on">Toggle Extra Images</button>
+            <button id="decreaseExtraImages" onclick="change(2)">Decrease Extra Images</button>
+            <button id="increaseExtraImages" onclick="change(3)">Increase Extra Images</button>
+            <button id="toggleMainInExtra" onclick="change(4)" class="on">Toggle Main In Extra</button>
+            <button id="toggleClickExtraOpensModal" onclick="change(5)" class="off">Toggle Click Extra Opens Modal</button>
+            <button id="changeTransitionSpeed" onclick="change(6)">Change Transition Speed: 500ms</button>
+        </div>
+
         <div class="js-gallery">
             <img src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg" alt="Tree">
             <img src="https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832_960_720.jpg" alt="Nature">
@@ -20,5 +30,84 @@
             <img src="https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_960_720.jpg" alt="Avenue">
             <img src="https://cdn.pixabay.com/photo/2014/04/14/20/11/pink-324175_960_720.jpg" alt="Pink">
         </div>
+
+        <script>
+            let options = {
+                selector: '.js-gallery',
+                main_image: true,
+                extra_images: true,
+                limit_extra_images: 6,
+                include_main_in_extra: true,
+                click_extra_open_modal: false,
+                transition_speed: 500
+            };
+
+            new Gallery(options);
+
+            const change = (num) => {
+                $('.js-gallery').empty();
+                $('.js-gallery').append(`
+                    <img src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg" alt="Tree">
+                    <img src="https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832_960_720.jpg" alt="Nature">
+                    <img src="https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072821_960_720.jpg" alt="Road">
+                    <img src="https://cdn.pixabay.com/photo/2017/12/15/13/51/polynesia-3021072_960_720.jpg" alt="Polynesia">
+                    <img src="https://cdn.pixabay.com/photo/2018/11/17/22/15/trees-3822149_960_720.jpg" alt="Trees">
+                    <img src="https://cdn.pixabay.com/photo/2017/05/09/03/46/alberta-2297204_960_720.jpg" alt="Alberta">
+                    <img src="https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_960_720.jpg" alt="Avenue">
+                    <img src="https://cdn.pixabay.com/photo/2014/04/14/20/11/pink-324175_960_720.jpg" alt="Pink">
+                `);
+            
+                switch(num) {
+                    case 0: {
+                        options.main_image = !options.main_image;
+                        $(`#toggleMainImage`).removeClass(options.main_image ? 'off' : 'on');
+                        $(`#toggleMainImage`).addClass(options.main_image ? 'on' : 'off');
+                        break;
+                    }
+                    case 1: {
+                        options.extra_images = !options.extra_images;
+                        $(`#toggleExtraImages`).removeClass(options.extra_images ? 'off' : 'on');
+                        $(`#toggleExtraImages`).addClass(options.extra_images ? 'on' : 'off');
+                        break;
+                    }
+                    case 2: {
+                        options.limit_extra_images--;
+                        if(options.limit_extra_images < 1) {
+                            options.limit_extra_images = 1;
+                        }
+                        break;
+                    }
+                    case 3: {
+                        options.limit_extra_images++;
+                        if(options.limit_extra_images > 8) {
+                            options.limit_extra_images = 8;
+                        }
+                        break;
+                    }
+                    case 4: {
+                        options.include_main_in_extra = !options.include_main_in_extra;
+                        $(`#toggleMainInExtra`).removeClass(options.include_main_in_extra ? 'off' : 'on');
+                        $(`#toggleMainInExtra`).addClass(options.include_main_in_extra ? 'on' : 'off');
+                        break;
+                    }
+                    case 5: {
+                        options.click_extra_open_modal = !options.click_extra_open_modal;
+                        $(`#toggleClickExtraOpensModal`).removeClass(options.click_extra_open_modal ? 'off' : 'on');
+                        $(`#toggleClickExtraOpensModal`).addClass(options.click_extra_open_modal ? 'on' : 'off');
+                        break;
+                    }
+                    case 6: {
+                        options.transition_speed += 100;
+                        if(options.transition_speed > 2500) {
+                            options.transition_speed = 100;
+                        }
+                        $(`#changeTransitionSpeed`).html(`Change Transition Speed: ${options.transition_speed}ms`);
+                        break;
+                    }
+                }
+
+                new Gallery(options);
+            }
+        </script>
     </body>
 </html>

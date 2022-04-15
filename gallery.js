@@ -138,8 +138,12 @@ class Gallery {
     generateCloseBtn() {
         this.closeBtn = $(`<div class='jsg-close-btn'>X</div>`);
         $(this.closeBtn).click((e) => {
-            const img = $(this.gallery).find(`[jsg-image-id='${$(this.modal).find('.jsg-main-img').attr('jsg-image-id')}']`);
+            let img = $(this.gallery).find(`[jsg-image-id='${$(this.modal).find('.jsg-main-img').attr('jsg-image-id')}']`);
             const imgOffset = $(img).offset();
+            if(!imgOffset) {
+                $(this.modal).remove();
+                return;
+            }
             const width = $(img).width();
             const height = $(img).height();
 
@@ -211,15 +215,3 @@ class Gallery {
         });
     }
 }
-
-$(document).ready(() => {
-    const gallery = new Gallery({
-        selector: '.js-gallery',
-        main_image: true,
-        extra_images: true,
-        limit_extra_images: 6,
-        include_main_in_extra: true,
-        click_extra_open_modal: false,
-        transition_speed: 500
-    });
-});
