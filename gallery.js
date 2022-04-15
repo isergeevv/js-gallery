@@ -17,6 +17,7 @@ class Gallery {
             const mainImg = $(`<img src='${this.images[0].src}' alt='${this.images[0].alt}' />`);
             $(mainDiv).append(mainImg);
             $(selector).append(mainDiv);
+            this.addMainClickEvent(mainDiv);
         }
 
         if(extra_images) {
@@ -36,11 +37,48 @@ class Gallery {
                 extraImg = $(`<img src='${this.images[i].src}' alt='${this.images[i].alt}' />`);
                 $(extraDiv).append(extraImg);
                 $(extraDivContainer).append(extraDiv);
+
+                this.addExtraClickEvent(extraDiv);
             }
             $(selector).append(extraDivContainer);
+
+            this.addExtraContainerScroll(extraDivContainer);
         }
     }
+    addMainClickEvent(el) {
+        $(el).click((e) => {
+            const clickImageID = $(e.currentTarget).attr('jsg-image-id');
+            
+        });
+    }
+
+    addExtraClickEvent(el) {
+        $(el).click((e) => {
+            const clickImageID = $(e.currentTarget).attr('jsg-image-id');
+            const mainImage = $('.jsg-main-image');
+            const mainImageID = $(mainImage).attr('jsg-image-id');
+
+            if(clickImageID != mainImageID) {
+                $('.jsg-main-image').attr('jsg-image-id', clickImageID);
+                $('.jsg-main-image img').attr('src', $(e.currentTarget).find('img').attr('src'));
+            }
+        });
+    }
+
+    addExtraContainerScroll(el) {
+        $(el).on('wheel', (event) => {
+            if(!event.originalEvent.deltaY) {
+                return;
+            }
+
+            const scroll = (event.originalEvent.deltaY > 0) ? 1 : 0;
+          
+            console.log(scroll);
+            console.log(scroll);
+        });
+    }
 }
+
 $(document).ready(() => {
     new Gallery({
         selector: '.js-gallery',
