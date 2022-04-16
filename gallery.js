@@ -53,8 +53,10 @@ class Gallery {
                 if(!this.drag) {
                     return;
                 }
+                const width = $(window).width();
+                const speed = Math.floor(width / 500);
                 const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modalExtraImagesDiv);
-                target.scrollLeft(target.scrollLeft() + ((this.lastDragX > e.pageX) ? 5 : -5));
+                target.scrollLeft(target.scrollLeft() + ((this.lastDragX > e.pageX) ? speed : (speed * -1)));
                 this.lastDragX = e.pageX;
                 e.preventDefault();
             });
