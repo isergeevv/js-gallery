@@ -230,18 +230,4 @@ $(document).ready(() => {
         }
         new Gallery(options);
     });
-
-    /*
-    or
-
-    new Gallery({
-        selector: '#some_gallery',
-        main_image: true,
-        extra_images: true,
-        limit_extra_images: 6,
-        include_main_in_extra: true,
-        click_extra_open_modal: false,
-        transition_speed: 500
-    });
-    */
 });
