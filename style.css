@@ -45,24 +45,25 @@ body {
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
-.js-gallery {
+.js-gallery,
+.js-gallery-html {
     width: 800px;
     height: 800px;
 }
 
-.js-gallery .jsg-main-image {
+:is(.js-gallery, .js-gallery-html) .jsg-main-image {
     width: 100%;
     height: 600px;
     padding: 10px;
     cursor: pointer;
 }
 
-.js-gallery .jsg-main-image img {
+:is(.js-gallery, .js-gallery-html) .jsg-main-image img {
     max-width: 100%;
     max-height: 100%;
 }
 
-.js-gallery .jsg-extra-images {
+:is(.js-gallery, .js-gallery-html) .jsg-extra-images {
     height: 200px;
     display: flex;
     flex-direction: row;
@@ -71,19 +72,19 @@ body {
     padding: 5px;
     cursor: grab;
 }
-.js-gallery .jsg-extra-images::-webkit-scrollbar {
+:is(.js-gallery, .js-gallery-html) .jsg-extra-images::-webkit-scrollbar {
     display: none;
 }
-.js-gallery .jsg-extra-images {
+:is(.js-gallery, .js-gallery-html) .jsg-extra-images {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.js-gallery .jsg-extra-images .jsg-extra-image {
+:is(.js-gallery, .js-gallery-html) .jsg-extra-images .jsg-extra-image {
     height: 100%;
 }
 
-.js-gallery .jsg-extra-images .jsg-extra-image img {
+:is(.js-gallery, .js-gallery-html) .jsg-extra-images .jsg-extra-image img {
     width: auto;
     max-height: 100%;
     padding: 5px;

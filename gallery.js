@@ -54,7 +54,7 @@ class Gallery {
                     return;
                 }
                 const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modalExtraImagesDiv);
-                target.scrollLeft(target.scrollLeft() + ((this.lastDragX > e.pageX) ? 2 : -2));
+                target.scrollLeft(target.scrollLeft() + ((this.lastDragX > e.pageX) ? 5 : -5));
                 this.lastDragX = e.pageX;
                 e.preventDefault();
             });
@@ -188,6 +188,7 @@ class Gallery {
 
             const extraImagesDiv = $(this.gallery).find('.jsg-extra-images');
             extraImagesDiv.scrollLeft(extraImagesDiv.scrollLeft() + ((e.originalEvent.deltaY > 0) ? 50 : -50));
+            e.preventDefault();
         });
     }
     addModalExtraContainerScroll() {
@@ -215,3 +216,32 @@ class Gallery {
         });
     }
 }
+
+$(document).ready(() => {
+    $('.js-gallery-html').each((index, gallery) => {
+        const options = {
+            selector: gallery,
+            main_image: $(gallery).attr('main_image'),
+            extra_images: $(gallery).attr('extra_images'),
+            limit_extra_images: Number($(gallery).attr('limit_extra_images')),
+            include_main_in_extra: $(gallery).attr('include_main_in_extra'),
+            click_extra_open_modal: $(gallery).attr('click_extra_open_modal'),
+            transition_speed: Number($(gallery).attr('transition_speed'))
+        }
+        new Gallery(options);
+    });
+
+    /*
+    or
+
+    new Gallery({
+        selector: '#some_gallery',
+        main_image: true,
+        extra_images: true,
+        limit_extra_images: 6,
+        include_main_in_extra: true,
+        click_extra_open_modal: false,
+        transition_speed: 500
+    });
+    */
+});
