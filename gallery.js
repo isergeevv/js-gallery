@@ -1,5 +1,5 @@
 class Gallery {
-    constructor({ selector, main_image = true, extra_images = true, limit_extra_images = 3, include_main_in_extra = false, transition_speed = 500, click_extra_open_modal = false }) {
+    constructor({ selector, main_image = true, extra_images = true, limit_extra_images = null, include_main_in_extra = false, transition_speed = 500, click_extra_open_modal = false }) {
         this.images = Array();
         this.transition_speed = transition_speed;
         this.main_image = main_image;
