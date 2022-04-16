@@ -1,3 +1,7 @@
+## Preview
+
+[tw1stybg.net/projects/jsgallery](https://tw1stybg.net/projects/jsgallery/)
+
 # JS Gallery
 
 Javascript image gallery made using jQuery 3.5.1

@@ -25,12 +25,17 @@ body {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin-bottom: 50px;
 }
-.js-controls button {
+.js-controls button,
+.js-controls a {
     background: unset;
     border: unset;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     padding: 5px;
     cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .js-controls button.on {
     background-color: rgb(86, 197, 86);
@@ -38,10 +43,12 @@ body {
 .js-controls button.off {
     background-color: rgb(213, 61, 61);
 }
-.js-controls button:hover {
+.js-controls button:hover,
+.js-controls a:hover {
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
-.js-controls button:active {
+.js-controls button:active,
+.js-controls a:active {
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
