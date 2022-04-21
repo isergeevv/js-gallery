@@ -35,7 +35,8 @@ new Gallery({
     limit_extra_images: 6,
     include_main_in_extra: true,
     click_extra_open_modal: false,
-    transition_speed: 500
+    transition_speed: 500,
+    nav_buttons: false
 });
 ```
 
@@ -54,7 +55,8 @@ Add attributes to the `<div>` and set them up:
     limit_extra_images="6" 
     include_main_in_extra="true" 
     click_extra_open_modal="false" 
-    transition_speed="500"
+    transition_speed="500" 
+    nav_buttons="false"
 >
     ....images
 </div>
