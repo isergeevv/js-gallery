@@ -54,20 +54,47 @@ body {
 
 .js-gallery,
 .js-gallery-html {
+    position: relative;
     width: 800px;
-    height: 800px;
+    height: 550px;
+    user-select: none;
 }
 
 :is(.js-gallery, .js-gallery-html) .jsg-main-image {
+    position: relative;
     width: 100%;
-    height: 600px;
+    height: 100%;
     padding: 10px;
     cursor: pointer;
 }
 
 :is(.js-gallery, .js-gallery-html) .jsg-main-image img {
+    position: absolute;
     max-width: 100%;
     max-height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+:is(.js-gallery, .js-gallery-html) .jsg-main-image .jsg-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: .5em .3em;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-weight: 700;
+    font-size: 2em;
+    background-color: rgba(192, 192, 192, 0.3);
+}
+:is(.js-gallery, .js-gallery-html) .jsg-main-image .jsg-btn:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+:is(.js-gallery, .js-gallery-html) .jsg-main-image .jsg-btn.jsg-btn_left {
+    left: 0;
+}
+:is(.js-gallery, .js-gallery-html) .jsg-main-image .jsg-btn.jsg-btn_right {
+    right: 0;
 }
 
 :is(.js-gallery, .js-gallery-html) .jsg-extra-images {
@@ -106,6 +133,8 @@ body {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    cursor: pointer;
+    user-select: none;
 }
 
 .js-gallery-modal .modal-background {
@@ -116,13 +145,33 @@ body {
     opacity: 0;
 }
 
-.js-gallery-modal .jsg-main-img {
+.js-gallery-modal .jsg-main-image {
     position: absolute;
     text-align: center;
     cursor: pointer;
 }
 
-.js-gallery-modal .jsg-main-img img {
+.js-gallery-modal .jsg-main-image .jsg-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: .5em .3em;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-weight: 700;
+    font-size: 2em;
+    background-color: rgba(192, 192, 192, 0.3);
+}
+.js-gallery-modal .jsg-main-image .jsg-btn:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+.js-gallery-modal .jsg-main-image .jsg-btn.jsg-btn_left {
+    left: 0;
+}
+.js-gallery-modal .jsg-main-image .jsg-btn.jsg-btn_right {
+    right: 0;
+}
+
+.js-gallery-modal .jsg-main-image img {
     max-height: 100%;
     max-width: 100%;
 }
@@ -162,7 +211,8 @@ body {
     position: absolute;
     top: 3vh;
     right: 3vw;
-    width: 50px;
-    height: 50px;
+    color: silver;
+    font-size: 2rem;
+    font-weight: 700;
     cursor: pointer;
 }

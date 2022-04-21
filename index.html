@@ -18,6 +18,7 @@
             <button id="toggleMainInExtra" onclick="change(4)" class="on">Toggle Main In Extra</button>
             <button id="toggleClickExtraOpensModal" onclick="change(5)" class="off">Toggle Click Extra Opens Modal</button>
             <button id="changeTransitionSpeed" onclick="change(6)">Change Transition Speed: 500ms</button>
+            <button id="toggleNavButtons" onclick="change(7)" class="off">Toggle Nav Buttons</button>
             <a href="https://github.com/Tw1ster95/js-gallery" target="_blank" style="text-decoration: none; color: unset;">Github Repo</a>
         </div>
 
@@ -41,7 +42,8 @@
             limit_extra_images="6" 
             include_main_in_extra="true" 
             click_extra_open_modal="false" 
-            transition_speed="500"
+            transition_speed="500",
+            nav_buttons="false"
         >
             <img src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg" alt="Tree">
             <img src="https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832_960_720.jpg" alt="Nature">
@@ -61,7 +63,8 @@
                 limit_extra_images: 6,
                 include_main_in_extra: true,
                 click_extra_open_modal: false,
-                transition_speed: 500
+                transition_speed: 500,
+                nav_buttons: false
             };
 
             new Gallery(options);
@@ -124,6 +127,12 @@
                             options.transition_speed = 100;
                         }
                         $(`#changeTransitionSpeed`).html(`Change Transition Speed: ${options.transition_speed}ms`);
+                        break;
+                    }
+                    case 7: {
+                        options.nav_buttons = !options.nav_buttons;
+                        $(`#toggleNavButtons`).removeClass(options.nav_buttons ? 'off' : 'on');
+                        $(`#toggleNavButtons`).addClass(options.nav_buttons ? 'on' : 'off');
                         break;
                     }
                 }

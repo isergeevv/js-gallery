@@ -1,10 +1,11 @@
 class Gallery {
-    constructor({ selector, main_image = true, extra_images = true, limit_extra_images = null, include_main_in_extra = false, transition_speed = 500, click_extra_open_modal = false }) {
+    constructor({ selector, main_image = true, extra_images = true, limit_extra_images = null, include_main_in_extra = false, transition_speed = 500, click_extra_open_modal = false, nav_buttons = false }) {
         this.images = Array();
         this.transition_speed = transition_speed;
         this.main_image = main_image;
         this.include_main_in_extra = include_main_in_extra;
         this.click_extra_open_modal = click_extra_open_modal;
+        this.nav_buttons = nav_buttons;
         this.gallery = $(selector);
         
         $(this.gallery).children().each((index, img) => {
@@ -24,6 +25,8 @@ class Gallery {
             $(mainDiv).append(mainImg);
             $(this.gallery).append(mainDiv);
             this.addMainClickEvent(mainDiv);
+            if(this.nav_buttons)
+                this.addNavBtns(mainDiv);
         }
 
         if(extra_images) {
@@ -45,18 +48,16 @@ class Gallery {
                 this.addExtraClickEvent(extraDiv);
             }
             $(this.gallery).append(extraDivContainer);
-            this.addExtraImagesDrag(extraDivContainer);
 
+            this.addExtraImagesDrag(extraDivContainer);
             this.addExtraContainerScroll(extraDivContainer);
 
             $(window).on('mousemove', (e) => {
                 if(!this.drag) {
                     return;
                 }
-                const width = $(window).width();
-                const speed = Math.floor(width / 500);
                 const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modalExtraImagesDiv);
-                target.scrollLeft(target.scrollLeft() + ((this.lastDragX > e.pageX) ? speed : (speed * -1)));
+                target.scrollLeft(target.scrollLeft() + (this.lastDragX - e.pageX));
                 this.lastDragX = e.pageX;
                 e.preventDefault();
             });
@@ -67,8 +68,64 @@ class Gallery {
         }
     }
 
+    addNavBtns(mainDiv) {
+        const btnLeft = $(`<div class="jsg-btn jsg-btn_left" style="display: none;">⏴</div>`);
+        const btnRight = $(`<div class="jsg-btn jsg-btn_right">⏵</div>`);
+        $(mainDiv).append(btnLeft, btnRight);
+
+        $(btnLeft).click((e) => this.prevImage(false));
+        $(btnRight).click((e) => this.nextImage(false));
+    }
+    addModalNavBtns(mainDiv) {
+        const btnLeft = $(`<div class="jsg-btn jsg-btn_left" style="display: none;">⏴</div>`);
+        const btnRight = $(`<div class="jsg-btn jsg-btn_right">⏵</div>`);
+        $(mainDiv).append(btnLeft, btnRight);
+
+        $(btnLeft).click((e) => this.prevImage(false));
+        $(btnRight).click((e) => this.nextImage(false));
+    }
+
+    toggleNavBtn(btn, show) {
+        $(this.gallery).find(`.jsg-btn_${btn}`).css('display', (show ? 'block' : 'none'));
+        $(this.modal).find(`.jsg-btn_${btn}`).css('display', (show ? 'block' : 'none'));
+    }
+
+    prevImage(modal) {
+        const element = (modal ? this.modal : this.gallery);
+        const mainImageDiv = $(element).find('.jsg-main-image');
+        const prevImageId = Number($(mainImageDiv).attr('jsg-image-id')) - 1;
+        const prevImageEl = $(element).find(`.jsg-extra-image[jsg-image-id="${(prevImageId)}"] img`);
+        if(prevImageEl.length) {
+            $(mainImageDiv).attr('jsg-image-id', prevImageId);
+            $(mainImageDiv).find('img').attr('src', $(prevImageEl).attr('src'));
+            this.toggleNavBtn('right', true);
+            if($(prevImageEl).parent().is(':first-child'))
+                this.toggleNavBtn('left', false);
+        }
+        else
+            this.toggleNavBtn('left', false);
+    }
+
+    nextImage(modal) {
+        const element = (modal ? this.modal : this.gallery);
+        const mainImageDiv = $(element).find('.jsg-main-image');
+        const nextImageId = Number($(mainImageDiv).attr('jsg-image-id')) + 1;
+        const nextImageEl = $(element).find(`.jsg-extra-image[jsg-image-id="${(nextImageId)}"] img`);
+        if(nextImageEl.length) {
+            $(mainImageDiv).attr('jsg-image-id', nextImageId);
+            $(mainImageDiv).find('img').attr('src', $(nextImageEl).attr('src'));
+            this.toggleNavBtn('left', true);
+            if($(nextImageEl).parent().is(':last-child'))
+                this.toggleNavBtn('right', false);
+        }
+        else
+            this.toggleNavBtn('right', false);
+    }
+
     addMainClickEvent(el) {
         $(el).click((e) => {
+            // if nav buttons don't open
+            if($(e.target).hasClass('jsg-btn'))    return;
             const clickImageImg = $(e.currentTarget).find('img');
             const clickImageSrc = $(clickImageImg).attr('src');
             const clickImageID = $(e.currentTarget).attr('jsg-image-id');
@@ -107,14 +164,7 @@ class Gallery {
         const width = $(img).width();
         const height = $(img).height();
 
-        this.modal = $(`<div class='js-gallery-modal'>
-            <div class='modal-background' style='opacity: 0;'></div>
-            <div style='left: ${imgOffset.left}px; top: ${imgOffset.top}px; width: ${width}px; height: ${height}px;' class='jsg-main-img' jsg-image-id='${id}'>
-                <img src='${src}' alt='${id}' />
-            </div>
-        </div>`);
-
-        $('body').append(this.modal);
+        this.generateModal(imgOffset, width, height, src, id);
 
         this.generateCloseBtn();
 
@@ -124,7 +174,8 @@ class Gallery {
             opacity: '.9',
         }, this.transition_speed);
 
-        $(this.modal).find('.jsg-main-img').animate({
+        const mainDiv = $(this.modal).find('.jsg-main-image');
+        $(mainDiv).animate({
             width: '80vw',
             height: '70vh',
             top: '5vh',
@@ -135,35 +186,60 @@ class Gallery {
         });
         this.addModalExtraContainerScroll();
         this.addModalExtraImagesDrag();
+        this.addModalNavBtns(mainDiv);
+    }
+
+    generateModal(imgOffset, width, height, src, id) {
+        this.modal = $(`<div class='js-gallery-modal'>
+            <div class='modal-background' style='opacity: 0;'></div>
+            <div style='left: ${imgOffset.left}px; top: ${imgOffset.top}px; width: ${width}px; height: ${height}px;' class='jsg-main-image' jsg-image-id='${id}'>
+                <img src='${src}' alt='${id}' />
+            </div>
+        </div>`);
+
+        $('body').append(this.modal);
+
+        $(this.modal).on('wheel', (e) => {
+            e.preventDefault();
+        });
+
+        $(this.modal).click((e) => {
+            if(e.target.tagName !== 'IMG' && !$(e.target).hasClass('jsg-extra-images'))
+                this.closeModal();
+        });
     }
 
     generateCloseBtn() {
-        this.closeBtn = $(`<div class='jsg-close-btn'>X</div>`);
+        this.closeBtn = $(`<div class='jsg-close-btn'>&times;</div>`);
         $(this.closeBtn).click((e) => {
-            let img = $(this.gallery).find(`[jsg-image-id='${$(this.modal).find('.jsg-main-img').attr('jsg-image-id')}']`);
-            const imgOffset = $(img).offset();
-            if(!imgOffset) {
-                $(this.modal).remove();
-                return;
-            }
-            const width = $(img).width();
-            const height = $(img).height();
+            this.closeModal();
+        });
+    }
 
-            $(this.modalExtraImagesDiv).remove();
-            $(this.closeBtn).remove();
+    closeModal() {
+        let img = $(this.gallery).find(`[jsg-image-id='${$(this.modal).find('.jsg-main-image').attr('jsg-image-id')}']`);
+        const imgOffset = $(img).offset();
+        if(!imgOffset) {
+            $(this.modal).remove();
+            return;
+        }
+        const width = $(img).width();
+        const height = $(img).height();
 
-            $(this.modal).find('.modal-background').animate({
-                opacity: '0',
-            }, this.transition_speed);
+        $(this.modalExtraImagesDiv).remove();
+        $(this.closeBtn).remove();
 
-            $(this.modal).find('.jsg-main-img').animate({
-                width: width,
-                height: height,
-                top: imgOffset.top,
-                left: imgOffset.left
-            }, this.transition_speed, () => {
-                $(this.modal).remove();
-            });
+        $(this.modal).find('.modal-background').animate({
+            opacity: '0',
+        }, this.transition_speed);
+
+        $(this.modal).find('.jsg-main-image').animate({
+            width: width,
+            height: height,
+            top: imgOffset.top,
+            left: imgOffset.left
+        }, this.transition_speed, () => {
+            $(this.modal).remove();
         });
     }
 
@@ -175,7 +251,7 @@ class Gallery {
 
         $(this.modalExtraImagesDiv).children().each((index, img) => {
             $(img).click((e) => {
-                const mainImg = $(this.modal).find('.jsg-main-img');
+                const mainImg = $(this.modal).find('.jsg-main-image');
                 $(mainImg).attr('jsg-image-id', $(e.currentTarget).attr('jsg-image-id'));
                 $(mainImg).find('img').attr('src', $(e.currentTarget).find('img').attr('src'));
             });
@@ -200,6 +276,7 @@ class Gallery {
             }
 
             $(this.modalExtraImagesDiv).scrollLeft($(this.modalExtraImagesDiv).scrollLeft() + ((e.originalEvent.deltaY > 0) ? 50 : -50));
+            e.preventDefault();
         });
     }
 
@@ -228,7 +305,8 @@ $(document).ready(() => {
             limit_extra_images: Number($(gallery).attr('limit_extra_images')),
             include_main_in_extra: $(gallery).attr('include_main_in_extra'),
             click_extra_open_modal: $(gallery).attr('click_extra_open_modal'),
-            transition_speed: Number($(gallery).attr('transition_speed'))
+            transition_speed: Number($(gallery).attr('transition_speed')),
+            nav_buttons: $(gallery).attr('nav_buttons')
         }
         new Gallery(options);
     });
