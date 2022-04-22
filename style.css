@@ -55,15 +55,15 @@ body {
 .js-gallery,
 .js-gallery-html {
     position: relative;
-    width: 800px;
-    height: 550px;
+    width: 720px;
+    height: 650px;
     user-select: none;
 }
 
 :is(.js-gallery, .js-gallery-html) .jsg-main-image {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 80%;
     padding: 10px;
     cursor: pointer;
 }
@@ -98,7 +98,7 @@ body {
 }
 
 :is(.js-gallery, .js-gallery-html) .jsg-extra-images {
-    height: 200px;
+    height: 20%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -157,10 +157,10 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    padding: .5em .3em;
+    padding: .5rem .3rem;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     font-weight: 700;
-    font-size: 2em;
+    font-size: 2rem;
     background-color: rgba(192, 192, 192, 0.3);
 }
 .js-gallery-modal .jsg-main-image .jsg-btn:hover {
@@ -221,4 +221,21 @@ body {
     font-size: 2rem;
     font-weight: 700;
     cursor: pointer;
+}
+
+@media screen and (max-width: 720px) {
+    .js-gallery,
+    .js-gallery-html {
+        width: 80vw;
+        height: 100vw;
+    }
+    :is(.js-gallery, .js-gallery-html) .jsg-main-image {
+        height: 80vw;
+    }
+    :is(.js-gallery, .js-gallery-html) .jsg-extra-images {
+        height: 20vw;
+    }
+    :is(.js-gallery, .js-gallery-html, .js-gallery-modal) .jsg-main-image .jsg-btn {
+        font-size: 1rem;
+    }
 }

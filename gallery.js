@@ -54,7 +54,7 @@ class Gallery {
                 if(!this.drag) {
                     return;
                 }
-                const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modalExtraImagesDiv);
+                const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modal).find('.jsg-extra-images');
                 target.scrollLeft(target.scrollLeft() + (this.lastDragX - e.pageX));
                 this.lastDragX = e.pageX;
                 e.preventDefault();
@@ -176,7 +176,7 @@ class Gallery {
 
         this.generateCloseBtn();
 
-        this.generateExtraImageDivs();
+        const modalExtraImagesDiv = this.generateModalExtraImageDivs();
         
         $(this.modal).find('.modal-background').animate({
             opacity: '.9',
@@ -189,10 +189,10 @@ class Gallery {
             top: '5%',
             left: '10%'
         }, this.transition_speed, () => {
-            $(this.modal).append(this.modalExtraImagesDiv);
+            $(this.modal).append(modalExtraImagesDiv);
             $(this.modal).append(this.closeBtn);
-            this.addModalExtraContainerScroll();
-            this.addModalExtraImagesDrag();
+            this.addExtraContainerScroll(modalExtraImagesDiv, true);
+            this.addExtraImagesDrag(modalExtraImagesDiv, true);
             this.appendBtns();
         });
     }
@@ -238,7 +238,7 @@ class Gallery {
         const width = $(img).width();
         const height = $(img).height();
 
-        $(this.modalExtraImagesDiv).remove();
+        $(element).find('.jsg-extra-images').remove();
         $(this.closeBtn).remove();
 
         $(element).find('.modal-background').animate({
@@ -255,54 +255,35 @@ class Gallery {
         });
     }
 
-    generateExtraImageDivs() {
-        this.modalExtraImagesDiv = $(this.gallery).find('.jsg-extra-images').clone();
+    generateModalExtraImageDivs() {
+        const modalExtraImagesDiv = $(this.gallery).find('.jsg-extra-images').clone();
         if(this.main_image && !this.include_main_in_extra) {
-            $(this.modalExtraImagesDiv).prepend(`<div class='jsg-extra-image' jsg-image-id='0'><img src='${this.images[0].src}' alt='${this.images[0].alt}' /></div>`)
+            $(modalExtraImagesDiv).prepend(`<div class='jsg-extra-image' jsg-image-id='0'><img src='${this.images[0].src}' alt='${this.images[0].alt}' /></div>`)
         }
 
-        $(this.modalExtraImagesDiv).children().each((index, img) => {
+        $(modalExtraImagesDiv).children().each((index, img) => {
             $(img).click((e) => {
                 const mainImg = $(this.modal).find('.jsg-main-image');
                 $(mainImg).attr('jsg-image-id', $(e.currentTarget).attr('jsg-image-id'));
                 $(mainImg).find('img').attr('src', $(e.currentTarget).find('img').attr('src'));
             });
         });
+        return modalExtraImagesDiv;
     }
 
-    addExtraContainerScroll(el) {
+    addExtraContainerScroll(el, modal = false) {
         $(el).on('wheel', (e) => {
-            if(!e.originalEvent.deltaY) {
-                return;
-            }
-
-            const extraImagesDiv = $(this.gallery).find('.jsg-extra-images');
-            extraImagesDiv.scrollLeft(extraImagesDiv.scrollLeft() + ((e.originalEvent.deltaY > 0) ? 50 : -50));
-            e.preventDefault();
-        });
-    }
-    addModalExtraContainerScroll() {
-        $(this.modalExtraImagesDiv).on('wheel', (e) => {
-            if(!e.originalEvent.deltaY) {
-                return;
-            }
-
-            $(this.modalExtraImagesDiv).scrollLeft($(this.modalExtraImagesDiv).scrollLeft() + ((e.originalEvent.deltaY > 0) ? 50 : -50));
+            if(!e.originalEvent.deltaY) return;
+            
+            $(e.currentTarget).scrollLeft($(e.currentTarget).scrollLeft() + ((e.originalEvent.deltaY > 0) ? 50 : -50));
             e.preventDefault();
         });
     }
 
-    addExtraImagesDrag(el) {
+    addExtraImagesDrag(el, modal = false) {
         $(el).on('mousedown', (e) => {
             this.lastDragX = e.pageX;
-            this.drag = 1;
-            e.preventDefault();
-        });
-    }
-    addModalExtraImagesDrag() {
-        $(this.modalExtraImagesDiv).on('mousedown', (e) => {
-            this.lastDragX = e.pageX;
-            this.drag = 2;
+            this.drag = (modal ? 2 : 1);
             e.preventDefault();
         });
     }
