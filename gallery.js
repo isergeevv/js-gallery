@@ -50,6 +50,14 @@ class Gallery {
             this.addExtraImagesDrag(extraDivContainer);
             this.addExtraContainerScroll(extraDivContainer);
 
+            $(window).on('touchmove', (e) => {
+                if(!this.drag) {
+                    return;
+                }
+                const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modal).find('.jsg-extra-images');
+                target.scrollLeft(target.scrollLeft() + (this.lastDragX - e.touches[0].pageX));
+                this.lastDragX = e.touches[0].pageX;
+            });
             $(window).on('mousemove', (e) => {
                 if(!this.drag) {
                     return;
@@ -285,6 +293,10 @@ class Gallery {
             this.lastDragX = e.pageX;
             this.drag = (modal ? 2 : 1);
             e.preventDefault();
+        });
+        $(el).on('touchstart', (e) => {
+            this.lastDragX = e.touches[0].pageX;
+            this.drag = (modal ? 2 : 1);
         });
     }
 }
