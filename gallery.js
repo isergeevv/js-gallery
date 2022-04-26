@@ -19,34 +19,38 @@ class Gallery {
             return;
         }
         
+        const mainDiv = $(`<div class='jsg-main-image' jsg-image-id='0'></div>`);
+        const mainImg = $(`<img src='${this.images[0].src}' alt='${this.images[0].alt}' />`);
+        $(mainDiv).append(mainImg);
+        $(this.gallery).append(mainDiv);
+
         if(this.main_image) {
-            const mainDiv = $(`<div class='jsg-main-image' jsg-image-id='0'></div>`);
-            const mainImg = $(`<img src='${this.images[0].src}' alt='${this.images[0].alt}' />`);
-            $(mainDiv).append(mainImg);
-            $(this.gallery).append(mainDiv);
             this.addMainClickEvent(mainDiv);
         }
+        else {
+            $(mainDiv).css('display', 'none');
+        }
+
+        if(imgCount <= 1) {
+            return;
+        }
+
+        const oneExtra = (include_main_in_extra) ? 0 : 1;
+        if(limit_extra_images && imgCount-oneExtra > limit_extra_images) {
+            imgCount = limit_extra_images + oneExtra;
+        }
+
+        const extraDivContainer = $(`<div class='jsg-extra-images'></div>`);
+        let extraDiv;
+        for(let i = oneExtra; i < imgCount; i++) {
+            extraDiv = $(`<div class='jsg-extra-image' jsg-image-id='${i}'><img src='${this.images[i].src}' alt='${this.images[i].alt}' /></div>`);
+            $(extraDivContainer).append(extraDiv);
+
+            this.addExtraClickEvent(extraDiv);
+        }
+        $(this.gallery).append(extraDivContainer);
 
         if(extra_images) {
-            if(imgCount <= 1) {
-                return;
-            }
-
-            const oneExtra = (include_main_in_extra) ? 0 : 1;
-            if(limit_extra_images && imgCount-oneExtra > limit_extra_images) {
-                imgCount = limit_extra_images + oneExtra;
-            }
-
-            const extraDivContainer = $(`<div class='jsg-extra-images'></div>`);
-            let extraDiv;
-            for(let i = oneExtra; i < imgCount; i++) {
-                extraDiv = $(`<div class='jsg-extra-image' jsg-image-id='${i}'><img src='${this.images[i].src}' alt='${this.images[i].alt}' /></div>`);
-                $(extraDivContainer).append(extraDiv);
-
-                this.addExtraClickEvent(extraDiv);
-            }
-            $(this.gallery).append(extraDivContainer);
-
             this.addExtraImagesDrag(extraDivContainer);
             this.addExtraContainerScroll(extraDivContainer);
 
@@ -72,6 +76,10 @@ class Gallery {
                 e.preventDefault();
             });
         }
+        else {
+            extraDivContainer.css('display', 'none');
+        }
+        
         if(this.nav_buttons) {
             this.addNavBtns();
             this.appendBtns();
@@ -154,7 +162,7 @@ class Gallery {
         $(el).click((e) => {
             const mainImageDiv = $(this.gallery).find('.jsg-main-image');
 
-            if(!this.click_extra_open_modal && mainImageDiv.length) {
+            if(!this.click_extra_open_modal && this.main_image) {
                 const clickImageID = $(e.currentTarget).attr('jsg-image-id');
                 if(clickImageID != $(mainImageDiv).attr('jsg-image-id')) {
                     $(mainImageDiv).attr('jsg-image-id', clickImageID);
