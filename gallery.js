@@ -1,11 +1,12 @@
 class Gallery {
-    constructor({ selector, main_image = true, extra_images = true, limit_extra_images = null, include_main_in_extra = false, transition_speed = 500, click_extra_open_modal = false, nav_buttons = false }) {
+    constructor({ selector, main_image = true, extra_images = true, limit_extra_images = null, include_main_in_extra = false, transition_speed = 500, click_extra_open_modal = false, nav_buttons = false, main_follow_modal = true }) {
         this.images = Array();
         this.transition_speed = transition_speed;
         this.main_image = main_image;
         this.include_main_in_extra = include_main_in_extra;
         this.click_extra_open_modal = click_extra_open_modal;
         this.nav_buttons = nav_buttons;
+        this.main_follow_modal = main_follow_modal;
         this.gallery = $(selector);
         
         $(this.gallery).children().each((index, img) => {
@@ -175,6 +176,7 @@ class Gallery {
                 const clickImageID = $(e.currentTarget).attr('jsg-image-id');
                 this.openGalleryModal(clickImageImg, clickImageSrc, clickImageID);
             }
+            this.appendBtns();
         });
     }
 
@@ -282,6 +284,12 @@ class Gallery {
                 const mainImg = $(this.modal).find('.jsg-main-image');
                 $(mainImg).attr('jsg-image-id', $(e.currentTarget).attr('jsg-image-id'));
                 $(mainImg).find('img').attr('src', $(e.currentTarget).find('img').attr('src'));
+                if(this.main_follow_modal) {
+                    const galleryMain = $(this.gallery).find('.jsg-main-image');
+                    $(galleryMain).attr('jsg-image-id', $(e.currentTarget).attr('jsg-image-id'));
+                    $(galleryMain).find('img').attr('src', $(e.currentTarget).find('img').attr('src'));
+                }
+                this.appendBtns();
             });
         });
         return modalExtraImagesDiv;
@@ -319,7 +327,8 @@ $(document).ready(() => {
             include_main_in_extra: $(gallery).attr('include_main_in_extra'),
             click_extra_open_modal: $(gallery).attr('click_extra_open_modal'),
             transition_speed: Number($(gallery).attr('transition_speed')),
-            nav_buttons: $(gallery).attr('nav_buttons')
+            nav_buttons: $(gallery).attr('nav_buttons'),
+            main_follow_modal: $(gallery).attr('main_follow_modal')
         }
         new Gallery(options);
     });

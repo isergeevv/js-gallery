@@ -19,6 +19,7 @@
             <button id="toggleClickExtraOpensModal" onclick="change(5)" class="off">Toggle Click Extra Opens Modal</button>
             <button id="changeTransitionSpeed" onclick="change(6)">Change Transition Speed: 500ms</button>
             <button id="toggleNavButtons" onclick="change(7)" class="off">Toggle Nav Buttons</button>
+            <button id="toggleMainFollowModal" onclick="change(8)" class="off">Toggle Main Image Follow Modal</button>
             <a href="https://github.com/Tw1ster95/js-gallery" target="_blank" style="text-decoration: none; color: unset;">Github Repo</a>
         </div>
 
@@ -43,7 +44,8 @@
             include_main_in_extra="true" 
             click_extra_open_modal="false" 
             transition_speed="500",
-            nav_buttons="false"
+            nav_buttons="false",
+            main_follow_modal="true"
         >
             <img src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg" alt="Tree">
             <img src="https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832_960_720.jpg" alt="Nature">
@@ -64,7 +66,8 @@
                 include_main_in_extra: true,
                 click_extra_open_modal: false,
                 transition_speed: 500,
-                nav_buttons: false
+                nav_buttons: false,
+                main_follow_modal: false
             };
 
             new Gallery(options);
@@ -133,6 +136,12 @@
                         options.nav_buttons = !options.nav_buttons;
                         $(`#toggleNavButtons`).removeClass(options.nav_buttons ? 'off' : 'on');
                         $(`#toggleNavButtons`).addClass(options.nav_buttons ? 'on' : 'off');
+                        break;
+                    }
+                    case 8: {
+                        options.main_follow_modal = !options.main_follow_modal;
+                        $(`#toggleMainFollowModal`).removeClass(options.main_follow_modal ? 'off' : 'on');
+                        $(`#toggleMainFollowModal`).addClass(options.main_follow_modal ? 'on' : 'off');
                         break;
                     }
                 }
