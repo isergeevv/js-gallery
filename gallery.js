@@ -106,7 +106,7 @@ class Gallery {
         this.toggleNavBtn('left', true);
         if($(currentExtraImageEl).is(':last-child'))
             this.toggleNavBtn('right', false);
-        else if($(currentExtraImageEl).is(':first-child'))
+        else if((this.include_main_in_extra && $(currentExtraImageEl).is(':first-child')) || currentMainImageId == 0)
             this.toggleNavBtn('left', false);
     }
 
@@ -121,14 +121,29 @@ class Gallery {
         const prevImageId = Number($(mainImageDiv).attr('jsg-image-id')) - 1;
         const prevImageEl = $(element).find(`.jsg-extra-image[jsg-image-id="${prevImageId}"] img`);
         if(prevImageEl.length) {
+            const src = $(prevImageEl).attr('src');
             $(mainImageDiv).attr('jsg-image-id', prevImageId);
             $(mainImageDiv).find('img').attr('src', $(prevImageEl).attr('src'));
+            if(this.main_follow_modal && element == this.modal) {
+                $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', prevImageId);
+                $(this.gallery).find('.jsg-main-image img').attr('src', src);
+            }
             this.toggleNavBtn('right', true);
             if($(prevImageEl).parent().is(':first-child'))
-                this.toggleNavBtn('left', false);
+                this.toggleNavBtn('left', (!this.include_main_in_extra && prevImageId == 1));
         }
-        else
+        else {
+            if(!this.include_main_in_extra && prevImageId == 0) {
+                $(mainImageDiv).attr('jsg-image-id', prevImageId);
+                $(mainImageDiv).find('img').attr('src', this.images[0].src);
+                if(this.main_follow_modal && element == this.modal) {
+                    $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', prevImageId);
+                    $(this.gallery).find('.jsg-main-image img').attr('src', this.images[0].src);
+                }
+                this.toggleNavBtn('right', true);
+            }
             this.toggleNavBtn('left', false);
+        }
     }
 
     nextImage() {
@@ -137,8 +152,13 @@ class Gallery {
         const nextImageId = Number($(mainImageDiv).attr('jsg-image-id')) + 1;
         const nextImageEl = $(element).find(`.jsg-extra-image[jsg-image-id="${(nextImageId)}"] img`);
         if(nextImageEl.length) {
+            const src = $(nextImageEl).attr('src');
             $(mainImageDiv).attr('jsg-image-id', nextImageId);
-            $(mainImageDiv).find('img').attr('src', $(nextImageEl).attr('src'));
+            $(mainImageDiv).find('img').attr('src', src);
+            if(this.main_follow_modal && element == this.modal) {
+                $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', nextImageId);
+                $(this.gallery).find('.jsg-main-image img').attr('src', src);
+            }
             this.toggleNavBtn('left', true);
             if($(nextImageEl).parent().is(':last-child'))
                 this.toggleNavBtn('right', false);
@@ -212,6 +232,10 @@ class Gallery {
             this.addExtraContainerScroll(modalExtraImagesDiv, true);
             this.addExtraImagesDrag(modalExtraImagesDiv, true);
             this.appendBtns();
+            if(this.main_follow_modal) {
+                $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', id);
+                $(this.gallery).find('.jsg-main-image img').attr('src', src);
+            }
         });
     }
 
@@ -275,9 +299,6 @@ class Gallery {
 
     generateModalExtraImageDivs() {
         const modalExtraImagesDiv = $(this.gallery).find('.jsg-extra-images').clone();
-        if(this.main_image && !this.include_main_in_extra) {
-            $(modalExtraImagesDiv).prepend(`<div class='jsg-extra-image' jsg-image-id='0'><img src='${this.images[0].src}' alt='${this.images[0].alt}' /></div>`)
-        }
 
         $(modalExtraImagesDiv).children().each((index, img) => {
             $(img).click((e) => {
