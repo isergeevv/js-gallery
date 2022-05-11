@@ -237,7 +237,7 @@ class Gallery {
                 $(this.gallery).find('.jsg-main-image img').attr('src', src);
             }
         });
-    }
+    } 
 
     generateModal(imgOffset, width, height, src, id) {
         this.modal = $(`<div class='js-gallery-modal'>
