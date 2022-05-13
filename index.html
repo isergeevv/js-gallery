@@ -58,6 +58,8 @@
         </div>
 
         <script>
+            const galleryEl = document.querySelector('.js-gallery');
+
             let options = {
                 selector: '.js-gallery',
                 main_image: true,
@@ -72,9 +74,13 @@
 
             new Gallery(options);
 
+            const changeClass = (el, opt) => {
+                document.querySelector(el).classList.remove(opt ? 'off' : 'on');
+                document.querySelector(el).classList.add(opt ? 'on' : 'off');
+            }
+
             const change = (num) => {
-                $('.js-gallery').empty();
-                $('.js-gallery').append(`
+                galleryEl.innerHTML = `
                     <img src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg" alt="Tree">
                     <img src="https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832_960_720.jpg" alt="Nature">
                     <img src="https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072821_960_720.jpg" alt="Road">
@@ -83,19 +89,17 @@
                     <img src="https://cdn.pixabay.com/photo/2017/05/09/03/46/alberta-2297204_960_720.jpg" alt="Alberta">
                     <img src="https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_960_720.jpg" alt="Avenue">
                     <img src="https://cdn.pixabay.com/photo/2014/04/14/20/11/pink-324175_960_720.jpg" alt="Pink">
-                `);
+                `;
             
                 switch(num) {
                     case 0: {
                         options.main_image = !options.main_image;
-                        $(`#toggleMainImage`).removeClass(options.main_image ? 'off' : 'on');
-                        $(`#toggleMainImage`).addClass(options.main_image ? 'on' : 'off');
+                        changeClass(`#toggleMainImage`, options.main_image);
                         break;
                     }
                     case 1: {
                         options.extra_images = !options.extra_images;
-                        $(`#toggleExtraImages`).removeClass(options.extra_images ? 'off' : 'on');
-                        $(`#toggleExtraImages`).addClass(options.extra_images ? 'on' : 'off');
+                        changeClass(`#toggleExtraImages`, options.extra_images);
                         break;
                     }
                     case 2: {
@@ -114,14 +118,12 @@
                     }
                     case 4: {
                         options.include_main_in_extra = !options.include_main_in_extra;
-                        $(`#toggleMainInExtra`).removeClass(options.include_main_in_extra ? 'off' : 'on');
-                        $(`#toggleMainInExtra`).addClass(options.include_main_in_extra ? 'on' : 'off');
+                        changeClass(`#toggleMainInExtra`, options.include_main_in_extra);
                         break;
                     }
                     case 5: {
                         options.click_extra_open_modal = !options.click_extra_open_modal;
-                        $(`#toggleClickExtraOpensModal`).removeClass(options.click_extra_open_modal ? 'off' : 'on');
-                        $(`#toggleClickExtraOpensModal`).addClass(options.click_extra_open_modal ? 'on' : 'off');
+                        changeClass(`#toggleClickExtraOpensModal`, options.click_extra_open_modal);
                         break;
                     }
                     case 6: {
@@ -129,19 +131,17 @@
                         if(options.transition_speed > 2500) {
                             options.transition_speed = 100;
                         }
-                        $(`#changeTransitionSpeed`).html(`Change Transition Speed: ${options.transition_speed}ms`);
+                        document.querySelector(`#changeTransitionSpeed`).innerHTML = `Change Transition Speed: ${options.transition_speed}ms`;
                         break;
                     }
                     case 7: {
                         options.nav_buttons = !options.nav_buttons;
-                        $(`#toggleNavButtons`).removeClass(options.nav_buttons ? 'off' : 'on');
-                        $(`#toggleNavButtons`).addClass(options.nav_buttons ? 'on' : 'off');
+                        changeClass(`#toggleNavButtons`, options.nav_buttons);
                         break;
                     }
                     case 8: {
                         options.main_follow_modal = !options.main_follow_modal;
-                        $(`#toggleMainFollowModal`).removeClass(options.main_follow_modal ? 'off' : 'on');
-                        $(`#toggleMainFollowModal`).addClass(options.main_follow_modal ? 'on' : 'off');
+                        changeClass(`#toggleMainFollowModal`, options.main_follow_modal);
                         break;
                     }
                 }

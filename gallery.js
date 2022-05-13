@@ -1,5 +1,15 @@
 class Gallery {
-    constructor({ selector, main_image = true, extra_images = true, limit_extra_images = null, include_main_in_extra = false, transition_speed = 500, click_extra_open_modal = false, nav_buttons = false, main_follow_modal = true }) {
+    constructor({
+        selector,
+        main_image = true,
+        extra_images = true,
+        limit_extra_images = null,
+        include_main_in_extra = false,
+        transition_speed = 500,
+        click_extra_open_modal = false,
+        nav_buttons = false,
+        main_follow_modal = true
+    }) {
         this.images = Array();
         this.transition_speed = transition_speed;
         this.main_image = main_image;
@@ -7,79 +17,74 @@ class Gallery {
         this.click_extra_open_modal = click_extra_open_modal;
         this.nav_buttons = nav_buttons;
         this.main_follow_modal = main_follow_modal;
-        this.gallery = $(selector);
-        
-        $(this.gallery).children().each((index, img) => {
-            this.images.push({ src: $(img).attr('src'), alt: $(img).attr('alt')});
-            $(img).remove();
-        });
+        this.gallery = (typeof(selector) == 'string') ? document.querySelector(selector) : selector;
+
+        for(let i = this.gallery.childElementCount-1; i >= 0 ; i--) {
+            this.images.unshift({ src: this.gallery.children[i].src, alt: this.gallery.children[i].alt});
+            this.gallery.children[i].remove();
+        }
 
         let imgCount = this.images.length;
 
-        if(!imgCount) {
-            return;
-        }
+        if(!imgCount) return;
         
-        const mainDiv = $(`<div class='jsg-main-image' jsg-image-id='0'></div>`);
-        const mainImg = $(`<img src='${this.images[0].src}' alt='${this.images[0].alt}' />`);
-        $(mainDiv).append(mainImg);
-        $(this.gallery).append(mainDiv);
+        const mainDiv = document.createElement('div');
+        mainDiv.classList.add('jsg-main-image');
+        mainDiv.setAttribute('jsg-image-id', '0');
+        const mainImg = document.createElement('img');
+        mainImg.src = this.images[0].src;
+        mainImg.alt = this.images[0].alt;
+        mainDiv.appendChild(mainImg);
+        this.gallery.appendChild(mainDiv);
 
-        if(this.main_image) {
-            this.addMainClickEvent(mainDiv);
-        }
-        else {
-            $(mainDiv).css('display', 'none');
-        }
+        if(this.main_image) this.addMainClickEvent(mainDiv);
+        else mainDiv.style.display = 'none';
 
-        if(imgCount <= 1) {
-            return;
-        }
+        if(imgCount <= 1) return;
 
         const oneExtra = (include_main_in_extra) ? 0 : 1;
-        if(limit_extra_images && imgCount-oneExtra > limit_extra_images) {
-            imgCount = limit_extra_images + oneExtra;
-        }
+        if(limit_extra_images && imgCount-oneExtra > limit_extra_images) imgCount = limit_extra_images + oneExtra;
 
-        const extraDivContainer = $(`<div class='jsg-extra-images'></div>`);
-        let extraDiv;
+        const extraDivContainer = document.createElement('div');
+        extraDivContainer.classList.add('jsg-extra-images');
+        let extraDiv, extraDivImg;
         for(let i = oneExtra; i < imgCount; i++) {
-            extraDiv = $(`<div class='jsg-extra-image' jsg-image-id='${i}'><img src='${this.images[i].src}' alt='${this.images[i].alt}' /></div>`);
-            $(extraDivContainer).append(extraDiv);
-
+            extraDiv = document.createElement('div'); 
+            extraDiv.classList.add('jsg-extra-image');
+            extraDiv.setAttribute('jsg-image-id', i);
+            extraDivImg = document.createElement('img');
+            extraDivImg.setAttribute('src', this.images[i].src);
+            extraDivImg.setAttribute('alt', this.images[i].alt);
+            extraDiv.appendChild(extraDivImg);
+            extraDivContainer.appendChild(extraDiv);
             this.addExtraClickEvent(extraDiv);
         }
-        $(this.gallery).append(extraDivContainer);
+        this.gallery.appendChild(extraDivContainer);
 
         if(extra_images) {
             this.addExtraImagesDrag(extraDivContainer);
             this.addExtraContainerScroll(extraDivContainer);
 
-            $(window).on('touchmove', (e) => {
-                if(!this.drag) {
-                    return;
-                }
-                const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modal).find('.jsg-extra-images');
-                target.scrollLeft(target.scrollLeft() + (this.lastDragX - e.touches[0].pageX));
+            window.addEventListener('touchmove', (e) => {
+                if(!this.drag) return;
+                const target = (this.drag == 1) ? this.gallery.querySelector('.jsg-extra-images') : this.modal.querySelector('.jsg-extra-images');
+                target.scrollLeft = target.scrollLeft + (this.lastDragX - e.touches[0].pageX);
                 this.lastDragX = e.touches[0].pageX;
             });
-            $(window).on('mousemove', (e) => {
-                if(!this.drag) {
-                    return;
-                }
-                const target = (this.drag == 1) ? $(this.gallery).find('.jsg-extra-images') : $(this.modal).find('.jsg-extra-images');
-                target.scrollLeft(target.scrollLeft() + (this.lastDragX - e.pageX));
+            window.addEventListener('mousemove', (e) => {
+                if(!this.drag) return;
+                const target = (this.drag == 1) ? this.gallery.querySelector('.jsg-extra-images') : this.modal.querySelector('.jsg-extra-images');
+                target.scrollLeft = target.scrollLeft + (this.lastDragX - e.pageX);
                 this.lastDragX = e.pageX;
                 e.preventDefault();
             });
-            $(window).on('mouseup', (e) => {
+            window.addEventListener('mouseup', (e) => {
                 this.drag = 0;
                 e.preventDefault();
             });
         }
-        else {
-            extraDivContainer.css('display', 'none');
-        }
+        else
+            extraDivContainer.style.display = 'none';
         
         if(this.nav_buttons) {
             this.addNavBtns();
@@ -88,57 +93,64 @@ class Gallery {
     }
 
     addNavBtns() {
-        this.btnLeft = $(`<div class="jsg-btn jsg-btn_left" style="display: none;">⏴</div>`);
-        this.btnRight = $(`<div class="jsg-btn jsg-btn_right">⏵</div>`);
+        this.btnLeft = document.createElement('div');
+        this.btnLeft.classList = 'jsg-btn jsg-btn_left';
+        this.btnLeft.innerText = '⏴';
+        this.btnRight = document.createElement('div');
+        this.btnRight.classList = 'jsg-btn jsg-btn_right';
+        this.btnRight.innerText = '⏵';
 
-        $(this.btnLeft).click((e) => this.prevImage());
-        $(this.btnRight).click((e) => this.nextImage());
+        this.btnLeft.addEventListener('click', (e) => this.prevImage());
+        this.btnRight.addEventListener('click', (e) => this.nextImage());
     }
 
     appendBtns() {
+        if(!this.btnLeft && !this.btnRight) return;
         const element = this.modal || this.gallery;
-        const mainDiv = $(element).find('.jsg-main-image');
-        $(element).find('.jsg-main-image').append(this.btnLeft, this.btnRight);
+        const mainDiv = element.querySelector('.jsg-main-image');
+        mainDiv.appendChild(this.btnLeft);
+        mainDiv.appendChild(this.btnRight);
 
-        const currentMainImageId = $(mainDiv).attr('jsg-image-id');
-        const currentExtraImageEl = $(element).find(`.jsg-extra-image[jsg-image-id="${currentMainImageId}"]`);
+        const currentMainImageId = mainDiv.getAttribute('jsg-image-id');
+        const currentExtraImageEl = element.querySelector(`.jsg-extra-image[jsg-image-id="${currentMainImageId}"]`);
         this.toggleNavBtn('right', true);
         this.toggleNavBtn('left', true);
-        if($(currentExtraImageEl).is(':last-child'))
+        if(!currentExtraImageEl.nextElementSibling)
             this.toggleNavBtn('right', false);
-        else if((this.include_main_in_extra && $(currentExtraImageEl).is(':first-child')) || currentMainImageId == 0)
+        else if((this.include_main_in_extra && !currentExtraImageEl.previousElementSibling) || currentMainImageId == 0)
             this.toggleNavBtn('left', false);
     }
 
     toggleNavBtn(btn, show) {
-        $(this.gallery).find(`.jsg-btn_${btn}`).css('display', (show ? 'block' : 'none'));
-        $(this.modal).find(`.jsg-btn_${btn}`).css('display', (show ? 'block' : 'none'));
+        const element = this.modal || this.gallery;
+        const btnEl = element.querySelector(`.jsg-btn_${btn}`);
+        if(btnEl) btnEl.style.display = (show ? 'block' : 'none');
     }
 
     prevImage() {
         const element = this.modal || this.gallery;
-        const mainImageDiv = $(element).find('.jsg-main-image');
-        const prevImageId = Number($(mainImageDiv).attr('jsg-image-id')) - 1;
-        const prevImageEl = $(element).find(`.jsg-extra-image[jsg-image-id="${prevImageId}"] img`);
-        if(prevImageEl.length) {
-            const src = $(prevImageEl).attr('src');
-            $(mainImageDiv).attr('jsg-image-id', prevImageId);
-            $(mainImageDiv).find('img').attr('src', $(prevImageEl).attr('src'));
+        const mainImageDiv = element.querySelector('.jsg-main-image');
+        const prevImageId = Number(mainImageDiv.getAttribute('jsg-image-id')) - 1;
+        const prevImageEl = element.querySelector(`.jsg-extra-image[jsg-image-id="${prevImageId}"] img`);
+        if(prevImageEl) {
+            const src = prevImageEl.getAttribute('src');
+            mainImageDiv.setAttribute('jsg-image-id', prevImageId);
+            mainImageDiv.querySelector('img').setAttribute('src', prevImageEl.getAttribute('src'));
             if(this.main_follow_modal && element == this.modal) {
-                $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', prevImageId);
-                $(this.gallery).find('.jsg-main-image img').attr('src', src);
+                this.gallery.querySelector('.jsg-main-image').setAttribute('jsg-image-id', prevImageId);
+                this.gallery.querySelector('.jsg-main-image img').setAttribute('src', src);
             }
             this.toggleNavBtn('right', true);
-            if($(prevImageEl).parent().is(':first-child'))
+            if(!prevImageEl.parentElement.previousElementSibling)
                 this.toggleNavBtn('left', (!this.include_main_in_extra && prevImageId == 1));
         }
         else {
             if(!this.include_main_in_extra && prevImageId == 0) {
-                $(mainImageDiv).attr('jsg-image-id', prevImageId);
-                $(mainImageDiv).find('img').attr('src', this.images[0].src);
+                mainImageDiv.setAttribute('jsg-image-id', prevImageId);
+                mainImageDiv.querySelector('img').setAttribute('src', this.images[0].src);
                 if(this.main_follow_modal && element == this.modal) {
-                    $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', prevImageId);
-                    $(this.gallery).find('.jsg-main-image img').attr('src', this.images[0].src);
+                    this.gallery.querySelector('.jsg-main-image').setAttribute('jsg-image-id', prevImageId);
+                    this.gallery.querySelector('.jsg-main-image img').setAttribute('src', this.images[0].src);
                 }
                 this.toggleNavBtn('right', true);
             }
@@ -148,19 +160,19 @@ class Gallery {
 
     nextImage() {
         const element = this.modal || this.gallery;
-        const mainImageDiv = $(element).find('.jsg-main-image');
-        const nextImageId = Number($(mainImageDiv).attr('jsg-image-id')) + 1;
-        const nextImageEl = $(element).find(`.jsg-extra-image[jsg-image-id="${(nextImageId)}"] img`);
-        if(nextImageEl.length) {
-            const src = $(nextImageEl).attr('src');
-            $(mainImageDiv).attr('jsg-image-id', nextImageId);
-            $(mainImageDiv).find('img').attr('src', src);
+        const mainImageDiv = element.querySelector('.jsg-main-image');
+        const nextImageId = Number(mainImageDiv.getAttribute('jsg-image-id')) + 1;
+        const nextImageEl = element.querySelector(`.jsg-extra-image[jsg-image-id="${(nextImageId)}"] img`);
+        if(nextImageEl) {
+            const src = nextImageEl.getAttribute('src');
+            mainImageDiv.setAttribute('jsg-image-id', nextImageId);
+            mainImageDiv.querySelector('img').setAttribute('src', src);
             if(this.main_follow_modal && element == this.modal) {
-                $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', nextImageId);
-                $(this.gallery).find('.jsg-main-image img').attr('src', src);
+                this.gallery.querySelector('.jsg-main-image').setAttribute('jsg-image-id', nextImageId);
+                this.gallery.querySelector('.jsg-main-image img').setAttribute('src', src);
             }
             this.toggleNavBtn('left', true);
-            if($(nextImageEl).parent().is(':last-child'))
+            if(!nextImageEl.parentElement.nextElementSibling)
                 this.toggleNavBtn('right', false);
         }
         else
@@ -168,189 +180,197 @@ class Gallery {
     }
 
     addMainClickEvent(el) {
-        $(el).click((e) => {
+        el.addEventListener('click', (e) => {
             // if nav buttons don't open
-            if($(e.target).hasClass('jsg-btn'))    return;
-            const clickImageImg = $(e.currentTarget).find('img');
-            const clickImageSrc = $(clickImageImg).attr('src');
-            const clickImageID = $(e.currentTarget).attr('jsg-image-id');
+            if(e.target.classList.contains('jsg-btn'))    return;
+            const clickImageImg = e.currentTarget.querySelector('img');
+            const clickImageSrc = clickImageImg.getAttribute('src');
+            const clickImageID = e.currentTarget.getAttribute('jsg-image-id');
 
             this.openGalleryModal(clickImageImg, clickImageSrc, clickImageID);
         });
     }
 
     addExtraClickEvent(el) {
-        $(el).click((e) => {
-            const mainImageDiv = $(this.gallery).find('.jsg-main-image');
+        el.addEventListener('click', (e) => {
+            const mainImageDiv = this.gallery.querySelector('.jsg-main-image');
 
             if(!this.click_extra_open_modal && this.main_image) {
-                const clickImageID = $(e.currentTarget).attr('jsg-image-id');
-                if(clickImageID != $(mainImageDiv).attr('jsg-image-id')) {
-                    $(mainImageDiv).attr('jsg-image-id', clickImageID);
-                    $(mainImageDiv).find('img').attr('src', $(e.currentTarget).find('img').attr('src'));
+                const clickImageID = e.currentTarget.getAttribute('jsg-image-id');
+                if(clickImageID != mainImageDiv.getAttribute('jsg-image-id')) {
+                    mainImageDiv.getAttribute('jsg-image-id', clickImageID);
+                    mainImageDiv.querySelector('img').setAttribute('src', e.currentTarget.querySelector('img').getAttribute('src'));
                 }
+                this.appendBtns();
             }
             else {
-                const clickImageImg = $(e.currentTarget).find('img');
-                const clickImageSrc = $(clickImageImg).attr('src');
-                const clickImageID = $(e.currentTarget).attr('jsg-image-id');
+                const clickImageImg = e.currentTarget.querySelector('img');
+                const clickImageSrc = clickImageImg.getAttribute('src');
+                const clickImageID = e.currentTarget.getAttribute('jsg-image-id');
                 this.openGalleryModal(clickImageImg, clickImageSrc, clickImageID);
             }
-            this.appendBtns();
         });
     }
 
     openGalleryModal(img, src, id) {
-        this.modal = $('.js-gallery-modal');
-        if(this.modal.length) {
-            $(this.modal).remove();
-        }
+        this.modal = document.querySelector('.js-gallery-modal');
+        if(this.modal) this.modal.remove();
 
-        const imgOffset = $(img).offset();
-        const width = $(img).width();
-        const height = $(img).height();
+        const imgRect = img.getBoundingClientRect();
 
-        this.generateModal(imgOffset, width, height, src, id);
+        this.generateModal({ top: imgRect.top, left: imgRect.left }, imgRect.width, imgRect.height, src, id);
 
         this.generateCloseBtn();
 
         const modalExtraImagesDiv = this.generateModalExtraImageDivs();
         
-        $(this.modal).find('.modal-background').animate({
+        $(this.modal.querySelector('.modal-background')).animate({
             opacity: '.9',
         }, this.transition_speed);
 
-        const mainDiv = $(this.modal).find('.jsg-main-image');
+        const mainDiv = this.modal.querySelector('.jsg-main-image');
         $(mainDiv).animate({
             width: '80%',
             height: '70%',
             top: '5%',
             left: '10%'
         }, this.transition_speed, () => {
-            $(this.modal).append(modalExtraImagesDiv);
-            $(this.modal).append(this.closeBtn);
-            this.addExtraContainerScroll(modalExtraImagesDiv, true);
+            this.modal.appendChild(modalExtraImagesDiv);
+            this.modal.appendChild(this.closeBtn);
+            this.addExtraContainerScroll(modalExtraImagesDiv);
             this.addExtraImagesDrag(modalExtraImagesDiv, true);
             this.appendBtns();
             if(this.main_follow_modal) {
-                $(this.gallery).find('.jsg-main-image').attr('jsg-image-id', id);
-                $(this.gallery).find('.jsg-main-image img').attr('src', src);
+                this.gallery.querySelector('.jsg-main-image').setAttribute('jsg-image-id', id);
+                this.gallery.querySelector('.jsg-main-image img').setAttribute('src', src);
             }
         });
     } 
 
     generateModal(imgOffset, width, height, src, id) {
-        this.modal = $(`<div class='js-gallery-modal'>
-            <div class='modal-background' style='opacity: 0;'></div>
-            <div style='left: ${imgOffset.left}px; top: ${imgOffset.top}px; width: ${width}px; height: ${height}px;' class='jsg-main-image' jsg-image-id='${id}'>
-                <img src='${src}' alt='${id}' />
-            </div>
-        </div>`);
+        this.modal = document.createElement('div');
+        this.modal.classList.add('js-gallery-modal');
+        const modalBg = document.createElement('div');
+        modalBg.classList.add('modal-background');
+        modalBg.style.opacity = '0';
+        const mainDiv = document.createElement('div');
+        mainDiv.classList.add('jsg-main-image');
+        mainDiv.setAttribute('jsg-image-id', id);
+        mainDiv.style = `left: ${imgOffset.left}px; top: ${imgOffset.top}px; width: ${width}px; height: ${height}px;`;
 
-        $('body').append(this.modal);
+        const mainImg = document.createElement('img');
+        mainImg.setAttribute('src', src);
+        mainImg.setAttribute('alt', id);
+        mainDiv.appendChild(mainImg);
+        this.modal.appendChild(modalBg);
+        this.modal.appendChild(mainDiv);
 
-        $(this.modal).on('wheel', (e) => {
-            e.preventDefault();
-        });
+        document.querySelector('body').appendChild(this.modal);
 
-        $(this.modal).click((e) => {
-            if(e.target.tagName !== 'IMG' && !$(e.target).hasClass('jsg-extra-images') && !$(e.target).hasClass('jsg-btn'))
+        this.modal.addEventListener('wheel', (e) => e.preventDefault());
+
+        this.modal.addEventListener('click', (e) => {
+            if(e.target.tagName !== 'IMG' && !e.target.classList.contains('jsg-extra-images') && !e.target.classList.contains('jsg-btn'))
                 this.closeModal();
         });
     }
 
     generateCloseBtn() {
-        this.closeBtn = $(`<div class='jsg-close-btn'>&times;</div>`);
-        $(this.closeBtn).click((e) => {
-            this.closeModal();
-        });
+        this.closeBtn = document.createElement('div');
+        this.closeBtn.classList = 'jsg-close-btn';
+        this.closeBtn.innerHTML = '&times;';
+        this.closeBtn.addEventListener('click', (e) => this.closeModal());
     }
 
     closeModal() {
         const element = this.modal;
+        if(!element) return;
         this.modal = null;
         this.appendBtns();
 
-        let img = $(this.gallery).find(`[jsg-image-id='${$(element).find('.jsg-main-image').attr('jsg-image-id')}']`);
-        const imgOffset = $(img).offset();
-        if(!imgOffset) {
-            $(element).remove();
+        let img = this.gallery.querySelector(`[jsg-image-id='${element.querySelector('.jsg-main-image').getAttribute('jsg-image-id')}']`);
+        const imgRect = img.getBoundingClientRect();
+        if(!imgRect.top && !imgRect.left) {
+            element.remove();
             return;
         }
-        const width = $(img).width();
-        const height = $(img).height();
 
-        $(element).find('.jsg-extra-images').remove();
-        $(this.closeBtn).remove();
+        element.querySelector('.jsg-extra-images').remove();
+        this.closeBtn.remove();
 
-        $(element).find('.modal-background').animate({
+        $(element.querySelector('.modal-background')).animate({
             opacity: '0',
         }, this.transition_speed);
 
-        $(element).find('.jsg-main-image').animate({
-            width: width,
-            height: height,
-            top: imgOffset.top,
-            left: imgOffset.left
+        $(element.querySelector('.jsg-main-image')).animate({
+            width: imgRect.width,
+            height: imgRect.height,
+            top: imgRect.top,
+            left: imgRect.left
         }, this.transition_speed, () => {
-            $(element).remove();
+            element.remove();
         });
     }
 
     generateModalExtraImageDivs() {
-        const modalExtraImagesDiv = $(this.gallery).find('.jsg-extra-images').clone();
+        const modalExtraImagesDiv = this.gallery.querySelector('.jsg-extra-images').cloneNode(true);
+        const children = modalExtraImagesDiv.childElementCount;
+        if(!children)   return;
 
-        $(modalExtraImagesDiv).children().each((index, img) => {
-            $(img).click((e) => {
-                const mainImg = $(this.modal).find('.jsg-main-image');
-                $(mainImg).attr('jsg-image-id', $(e.currentTarget).attr('jsg-image-id'));
-                $(mainImg).find('img').attr('src', $(e.currentTarget).find('img').attr('src'));
+        let child;
+        for(let i = 0; i < children; i++) {
+            child = modalExtraImagesDiv.children[i];
+            child.addEventListener('click', (e) => {
+                const mainImg = this.modal.querySelector('.jsg-main-image');
+                mainImg.setAttribute('jsg-image-id', e.currentTarget.getAttribute('jsg-image-id'));
+                mainImg.querySelector('img').setAttribute('src', e.currentTarget.querySelector('img').getAttribute('src'));
                 if(this.main_follow_modal) {
-                    const galleryMain = $(this.gallery).find('.jsg-main-image');
-                    $(galleryMain).attr('jsg-image-id', $(e.currentTarget).attr('jsg-image-id'));
-                    $(galleryMain).find('img').attr('src', $(e.currentTarget).find('img').attr('src'));
+                    const galleryMain = this.gallery.querySelector('.jsg-main-image');
+                    galleryMain.setAttribute('jsg-image-id', e.currentTarget.getAttribute('jsg-image-id'));
+                    galleryMain.querySelector('img').setAttribute('src', e.currentTarget.querySelector('img').getAttribute('src'));
                 }
                 this.appendBtns();
             });
-        });
+        }
         return modalExtraImagesDiv;
     }
 
-    addExtraContainerScroll(el, modal = false) {
-        $(el).on('wheel', (e) => {
+    addExtraContainerScroll(el) {
+        el.addEventListener('wheel', (e) => {
             if(!e.originalEvent.deltaY) return;
-            
-            $(e.currentTarget).scrollLeft($(e.currentTarget).scrollLeft() + ((e.originalEvent.deltaY > 0) ? 50 : -50));
+            e.currentTarget.scrollLeft = e.currentTarget.scrollLeft + ((e.originalEvent.deltaY > 0) ? 50 : -50);
             e.preventDefault();
         });
     }
 
     addExtraImagesDrag(el, modal = false) {
-        $(el).on('mousedown', (e) => {
+        el.addEventListener('mousedown', (e) => {
             this.lastDragX = e.pageX;
             this.drag = (modal ? 2 : 1);
             e.preventDefault();
         });
-        $(el).on('touchstart', (e) => {
+        el.addEventListener('touchstart', (e) => {
             this.lastDragX = e.touches[0].pageX;
             this.drag = (modal ? 2 : 1);
         });
     }
 }
 
-$(document).ready(() => {
-    $('.js-gallery-html').each((index, gallery) => {
+(() => {
+    const jsgElements = document.querySelectorAll('.js-gallery-html');
+    if(!jsgElements.length) return;
+    for(let i = 0; i < jsgElements.length; i++) {
         const options = {
-            selector: gallery,
-            main_image: $(gallery).attr('main_image'),
-            extra_images: $(gallery).attr('extra_images'),
-            limit_extra_images: Number($(gallery).attr('limit_extra_images')),
-            include_main_in_extra: $(gallery).attr('include_main_in_extra'),
-            click_extra_open_modal: $(gallery).attr('click_extra_open_modal'),
-            transition_speed: Number($(gallery).attr('transition_speed')),
-            nav_buttons: $(gallery).attr('nav_buttons'),
-            main_follow_modal: $(gallery).attr('main_follow_modal')
+            selector: jsgElements[i],
+            main_image: jsgElements[i].getAttribute('main_image'),
+            extra_images: jsgElements[i].getAttribute('extra_images'),
+            limit_extra_images: Number(jsgElements[i].getAttribute('limit_extra_images')),
+            include_main_in_extra: jsgElements[i].getAttribute('include_main_in_extra'),
+            click_extra_open_modal: jsgElements[i].getAttribute('click_extra_open_modal'),
+            transition_speed: Number(jsgElements[i].getAttribute('transition_speed')),
+            nav_buttons: jsgElements[i].getAttribute('nav_buttons'),
+            main_follow_modal: jsgElements[i].getAttribute('main_follow_modal')
         }
         new Gallery(options);
-    });
+    }
 });
