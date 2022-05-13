@@ -337,8 +337,8 @@ class Gallery {
 
     addExtraContainerScroll(el) {
         el.addEventListener('wheel', (e) => {
-            if(!e.originalEvent.deltaY) return;
-            e.currentTarget.scrollLeft = e.currentTarget.scrollLeft + ((e.originalEvent.deltaY > 0) ? 50 : -50);
+            if(!e.deltaY) return;
+            e.currentTarget.scrollLeft = e.currentTarget.scrollLeft + ((e.deltaY > 0) ? 50 : -50);
             e.preventDefault();
         });
     }
