@@ -4,7 +4,8 @@
 
 # JS Gallery
 
-Javascript image gallery made using jQuery 3.5.1
+~~Javascript image gallery made using jQuery 3.5.1~~
+Removed jQuery and used plain JS.
 
 ## Installation
 
