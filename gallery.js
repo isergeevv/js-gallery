@@ -224,17 +224,20 @@ class Gallery {
 
         const modalExtraImagesDiv = this.generateModalExtraImageDivs();
         
-        $(this.modal.querySelector('.modal-background')).animate({
-            opacity: '.9',
-        }, this.transition_speed);
-
+        const modalBg = this.modal.querySelector('.modal-background');
         const mainDiv = this.modal.querySelector('.jsg-main-image');
-        $(mainDiv).animate({
-            width: '80%',
-            height: '70%',
-            top: '5%',
-            left: '10%'
-        }, this.transition_speed, () => {
+        modalBg.style.transition = `all ${this.transition_speed}ms ease-in-out`;
+        mainDiv.style.transition = `all ${this.transition_speed}ms ease-in-out`;
+
+        setTimeout(() => {
+            modalBg.style.opacity = '.9';
+            mainDiv.style.width = '80%';
+            mainDiv.style.height = '70%';
+            mainDiv.style.top = '5%';
+            mainDiv.style.left = '10%';
+        }, 5);
+        
+        setTimeout(() => {
             this.modal.appendChild(modalExtraImagesDiv);
             this.modal.appendChild(this.closeBtn);
             this.addExtraContainerScroll(modalExtraImagesDiv);
@@ -244,7 +247,7 @@ class Gallery {
                 this.gallery.querySelector('.jsg-main-image').setAttribute('jsg-image-id', id);
                 this.gallery.querySelector('.jsg-main-image img').setAttribute('src', src);
             }
-        });
+        }, this.transition_speed);
     } 
 
     generateModal(imgOffset, width, height, src, id) {
@@ -298,18 +301,18 @@ class Gallery {
         element.querySelector('.jsg-extra-images').remove();
         this.closeBtn.remove();
 
-        $(element.querySelector('.modal-background')).animate({
-            opacity: '0',
-        }, this.transition_speed);
+        const modalBg = element.querySelector('.modal-background');
+        const mainDiv = element.querySelector('.jsg-main-image');
 
-        $(element.querySelector('.jsg-main-image')).animate({
-            width: imgRect.width,
-            height: imgRect.height,
-            top: imgRect.top,
-            left: imgRect.left
-        }, this.transition_speed, () => {
+        modalBg.style.opacity = '0';
+        mainDiv.style.width = `${imgRect.width}px`;
+        mainDiv.style.height = `${imgRect.height}px`;
+        mainDiv.style.top = `${imgRect.top}px`;
+        mainDiv.style.left = `${imgRect.left}px`;
+        
+        setTimeout(() => {
             element.remove();
-        });
+        }, this.transition_speed);
     }
 
     generateModalExtraImageDivs() {
