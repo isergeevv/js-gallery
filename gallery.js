@@ -364,7 +364,7 @@ class Gallery {
     }
 }
 
-(() => {
+window.onload = (e) => {
     const jsgElements = document.querySelectorAll('.js-gallery-html');
     if(!jsgElements.length) return;
     for(let i = 0; i < jsgElements.length; i++) {
@@ -382,4 +382,4 @@ class Gallery {
         }
         new Gallery(options);
     }
-});
+};
