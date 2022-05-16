@@ -198,7 +198,7 @@ class Gallery {
             if(!this.click_extra_open_modal && this.main_image) {
                 const clickImageID = e.currentTarget.getAttribute('jsg-image-id');
                 if(clickImageID != mainImageDiv.getAttribute('jsg-image-id')) {
-                    mainImageDiv.getAttribute('jsg-image-id', clickImageID);
+                    mainImageDiv.setAttribute('jsg-image-id', clickImageID);
                     mainImageDiv.querySelector('img').setAttribute('src', e.currentTarget.querySelector('img').getAttribute('src'));
                 }
                 this.appendBtns();
@@ -298,7 +298,9 @@ class Gallery {
             return;
         }
 
-        element.querySelector('.jsg-extra-images').remove();
+        const extraImages = element.querySelector('.jsg-extra-images');
+
+        if(extraImages) extraImages.remove();
         this.closeBtn.remove();
 
         const modalBg = element.querySelector('.modal-background');
