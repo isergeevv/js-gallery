@@ -291,7 +291,10 @@ class Gallery {
         this.modal = null;
         this.appendBtns();
 
-        let img = this.gallery.querySelector(`[jsg-image-id='${element.querySelector('.jsg-main-image').getAttribute('jsg-image-id')}']`);
+        let img;
+        if(this.main_image) img = this.gallery.querySelector(`[jsg-image-id='${element.querySelector('.jsg-main-image').getAttribute('jsg-image-id')}']`);
+        else img = this.gallery.querySelector(`.jsg-extra-images .jsg-extra-image[jsg-image-id='${element.querySelector('.jsg-main-image').getAttribute('jsg-image-id')}']`);
+
         const imgRect = img.getBoundingClientRect();
         if(!imgRect.top && !imgRect.left) {
             element.remove();
@@ -365,6 +368,7 @@ class Gallery {
     const jsgElements = document.querySelectorAll('.js-gallery-html');
     if(!jsgElements.length) return;
     for(let i = 0; i < jsgElements.length; i++) {
+        console.log(jsgElements[i]);
         const options = {
             selector: jsgElements[i],
             main_image: jsgElements[i].getAttribute('main_image'),
