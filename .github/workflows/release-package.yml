@@ -23,9 +23,11 @@ jobs:
           draft: false
           prerelease: false
 
-  build:
-    needs: release
+  publish-gpr:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       - name: Setup repo
         uses: actions/checkout@v3
@@ -33,23 +35,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          registry-url: https://npm.pkg.github.com/
       - name: Install dependencies
         run: npm ci
       - name: Run build
         run: npm run build
-
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: https://npm.pkg.github.com/
       - name: Publish Package
         run: npm publish
         env:
