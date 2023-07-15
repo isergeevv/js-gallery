@@ -1,5 +1,5 @@
 {
-  "name": "js-gallery",
+  "name": "@IwanSergeew/js-gallery",
   "version": "0.0.2",
   "description": "",
   "keywords": [],
@@ -33,3 +33,4 @@
     "url": "git+https://github.com/IwanSergeew/js-gallery.git"
   }
 }
+
