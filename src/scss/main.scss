@@ -51,6 +51,7 @@
     overflow: hidden;
     padding: 5px;
     cursor: grab;
+    touch-action: none;
 
     -ms-overflow-style: none;
     scrollbar-width: none;
