@@ -1,0 +1,100 @@
+.jsg-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  cursor: pointer;
+  user-select: none;
+
+  > .modal-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0;
+  }
+
+  > .jsg-main-image {
+    position: absolute;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    height: 75%;
+
+    > .jsg-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0.5rem 0.3rem;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      font-weight: 700;
+      font-size: 2rem;
+      background-color: rgba(192, 192, 192, 0.3);
+    }
+    > .jsg-btn:hover {
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+        rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+        rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+    > .jsg-btn.jsg-btn_left {
+      left: 0;
+    }
+    > .jsg-btn.jsg-btn_right {
+      right: 0;
+    }
+
+    > img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-height: 100%;
+      max-width: 100%;
+    }
+  }
+
+  > .jsg-extra-images {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 20%;
+    max-width: 90%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    padding: 5px;
+    cursor: grab;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    .jsg-extra-image {
+      height: 100%;
+
+      img {
+        height: 100%;
+        padding: 5px;
+      }
+    }
+  }
+  > .jsg-extra-images::-webkit-scrollbar {
+    display: none;
+  }
+
+  > .jsg-close-btn {
+    position: absolute;
+    top: 3%;
+    right: 3%;
+    color: silver;
+    font-size: 2rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+}
+

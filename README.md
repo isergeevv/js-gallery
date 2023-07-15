@@ -1,60 +1,60 @@
 # JS Gallery
 
-~~Javascript image gallery made using jQuery 3.5.1~~  
-Removed jQuery and used plain JS.
-
 ## Installation
 
-### JS version
+### Including iife script to head from package
 
-Include gallery.js in the `<head>`.
+Add following line in `<head>` and change `dir` to node-modules directory.
 
-Make a new `<div>` with class you are going to use to select in js like `js-gallery` filled with images like this:
 ```html
-<div class="js-gallery">
-    <img src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg" alt="Tree">
-    <img src="https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832_960_720.jpg" alt="Nature">
-    <img src="https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072821_960_720.jpg" alt="Road">
-    <img src="https://cdn.pixabay.com/photo/2017/12/15/13/51/polynesia-3021072_960_720.jpg" alt="Polynesia">
-    <img src="https://cdn.pixabay.com/photo/2018/11/17/22/15/trees-3822149_960_720.jpg" alt="Trees">
-    <img src="https://cdn.pixabay.com/photo/2017/05/09/03/46/alberta-2297204_960_720.jpg" alt="Alberta">
-    <img src="https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_960_720.jpg" alt="Avenue">
-    <img src="https://cdn.pixabay.com/photo/2014/04/14/20/11/pink-324175_960_720.jpg" alt="Pink">
+<script src="{dir}/IwanSergeew/js-gallery/dist/iife/index.js"></script>
+```
+
+If you want to use the provided css add this line also.
+
+```html
+<link rel="stylesheet" href="{dir}/IwanSergeew/js-gallery/dist/css/style.css" />
+```
+
+Make a new `<div>` in your html file. Add an id or class to it. The example has an id `gallery`. Fill the div with images.
+
+```html
+<div id="gallery">
+  <img src="img/1.jpg" alt="1" />
+  <img src="img/2.jpg" alt="2" />
+  <img src="img/3.jpg" alt="3" />
+  <img src="img/4.jpg" alt="4" />
+  <img src="img/5.jpg" alt="5" />
+  <img src="img/6.jpg" alt="6" />
 </div>
 ```
 
-In the footer of the website or in your main js file executed after html has loaded add:
+In your javascript file executed after html has loaded add:
+
 ```javascript
-new Gallery({
-    selector: '.js-gallery',
-    main_image: true,
-    extra_images: true,
-    limit_extra_images: 6,
-    include_main_in_extra: true,
-    click_extra_open_modal: false,
-    transition_speed: 500,
-    nav_buttons: false
-});
+new Gallery({ selector: "#gallery" });
 ```
 
-### HTML attributes version
+### Using HTML attributes
 
-Include gallery.js in the `<head>`.
+soon
 
-Make a new `<div>` with class `js-gallery-html` filled with images like shown in the JS version above.
+## Configuration
 
-Add attributes to the `<div>` and set them up:
+[*] indicates a mandatory field
 
-```html
-<div class="js-gallery-html" 
-    main_image="true" 
-    extra_images="true" 
-    limit_extra_images="6" 
-    include_main_in_extra="true" 
-    click_extra_open_modal="false" 
-    transition_speed="500" 
-    nav_buttons="false"
->
-    ....images
-</div>
 ```
+selector[*]: [HTMLElement | string] The element or selector of the gallery images container;
+images: [array] An array of images to be added in the gallery, can be used instead of adding them to the html;
+mainImage: [enable | disable] the main image;
+extraImages: [enable | disable] the extra images;
+excludeMainFromExtraImages: [enable | disable] hidden first image from the extra images;
+transitionSpeed: [number] transition speed in milliseconds;
+navButtons: [enable | disable] the previous and next image buttons;
+modal[*]: {
+    enable[*]: [enable | disable] modal
+    clickExtraImageOpenModal: [enable | disable] clicked extra images open modal
+    mainImageFollowModal: [enable | disable] change on modal main image changes gallery main image
+};
+```
+
