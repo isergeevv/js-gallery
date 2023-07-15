@@ -1,7 +1,10 @@
 {
-  "name": "gallery",
+  "name": "js-gallery",
   "version": "0.0.1",
   "description": "",
+  "keywords": [],
+  "author": "IwanSergeew",
+  "license": "ISC",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -13,9 +16,6 @@
     "build": "rollup -c",
     "build:watch": "rollup -c -w"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.2",
     "rollup": "^3.26.0",
@@ -24,5 +24,13 @@
     "sass": "^1.63.6",
     "tslib": "^2.6.0",
     "typescript": "^5.1.6"
+  },
+  "publishConfig": {
+    "@IwanSergeew:registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IwanSergeew/js-gallery.git"
   }
 }
+
