@@ -17,6 +17,7 @@
     "build:watch": "rollup -c -w"
   },
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
     "rollup": "^3.26.0",
     "rollup-plugin-dts": "^5.3.0",

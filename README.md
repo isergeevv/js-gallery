@@ -5,7 +5,7 @@
 1. Install package with `npm i @IwanSergeew/js-gallery`.
 
 2. Copy the following file from the package into your project and add it as a script in `<head>`.
-   `node_modules/IwanSergeew/js-gallery/dist/iife/index.js`
+   `node_modules/IwanSergeew/js-gallery/dist/iife/index.min.js`
 
 3. If you want you can also use the provided css.
    `node_modules/IwanSergeew/js-gallery/dist/css/style.css`

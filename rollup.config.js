@@ -1,6 +1,7 @@
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import postcss from "rollup-plugin-postcss";
+import terser from "@rollup/plugin-terser";
 
 export default [
   {
@@ -29,6 +30,16 @@ export default [
       name: "Gallery",
     },
     plugins: [typescript()],
+  },
+
+  {
+    input: `src/js/index.ts`,
+    output: {
+      file: `./dist/iife/index.min.js`,
+      format: "iife",
+      name: "Gallery",
+    },
+    plugins: [typescript(), terser()],
   },
 
   {
