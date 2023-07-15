@@ -89,5 +89,5 @@ new Gallery({
 
 ## Example image
 
-![Example image](https://github.com/IwanSergeew/js-gallery/blob/main/example/example.png)
+![Example image](https://github.com/IwanSergeew/js-gallery/blob/main/examples/example.png)
 
