@@ -24,6 +24,7 @@ jobs:
           prerelease: false
 
   publish-gpr:
+    needs: release
     runs-on: ubuntu-latest
     permissions:
       packages: write
