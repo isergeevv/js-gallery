@@ -1,4 +1,4 @@
-import { NAV_BUTTONS } from "./const";
+import { htmlAttributes, NAV_BUTTONS } from "./const";
 import GalleryModal from "./GalleryModal";
 import { GalleryImage, GalleryOptions } from "./types";
 
@@ -28,15 +28,10 @@ export default class Gallery {
         extraImages: true,
         excludeMainFromExtraImages: false,
         transitionSpeed: 500,
-        enableModal: false,
-        clickExtraOpenModal: false,
-        navButtons: false,
-        mainImageFollowModal: false,
-        modal: {
-          enable: true,
-          clickExtraImageOpenModal: true,
-          mainImageFollowModal: true,
-        },
+        navButtons: true,
+        modalEnable: true,
+        modalClickExtraImageOpenModal: true,
+        modalMainImageFollowModal: true,
       },
       options
     );
@@ -46,6 +41,8 @@ export default class Gallery {
     if (this._images.length > 0) {
       this.#buildGallery();
     }
+
+    Object.assign(this._galleryEl, { jsgElement: this });
   }
 
   get element() {
@@ -105,6 +102,84 @@ export default class Gallery {
   }
   get images() {
     return this._images;
+  }
+
+  static load() {
+    const galleries = document.querySelectorAll(
+      ".jsg"
+    ) as NodeListOf<HTMLElement>;
+
+    if (galleries.length) {
+      for (const galleryEl of galleries) {
+        const options: GalleryOptions = {
+          selector: galleryEl,
+          images: [],
+          mainImage: true,
+          extraImages: true,
+          excludeMainFromExtraImages: false,
+          transitionSpeed: 500,
+          navButtons: true,
+          modalEnable: true,
+          modalClickExtraImageOpenModal: true,
+          modalMainImageFollowModal: true,
+        };
+
+        const keys = Object.keys(galleryEl.dataset);
+        for (const key of keys) {
+          const opt = htmlAttributes[key];
+          if (!opt) continue;
+
+          const value = galleryEl.dataset[key];
+          if (!value) continue;
+
+          switch (opt) {
+            case "mainImage": {
+              options.mainImage = value === "true" ? true : false;
+              break;
+            }
+            case "extraImages": {
+              options.extraImages = value === "true" ? true : false;
+              break;
+            }
+            case "excludeMainFromExtraImages": {
+              options.excludeMainFromExtraImages =
+                value === "true" ? true : false;
+              break;
+            }
+            case "transitionSpeed": {
+              options.transitionSpeed = Number(value);
+              break;
+            }
+            case "navButtons": {
+              options.navButtons = value === "true" ? true : false;
+              break;
+            }
+            case "modalEnable": {
+              options.modalEnable = value === "true" ? true : false;
+              break;
+            }
+            case "modalClickExtraImageOpenModal": {
+              options.modalClickExtraImageOpenModal =
+                value === "true" ? true : false;
+              break;
+            }
+            case "modalMainImageFollowModal": {
+              options.modalMainImageFollowModal =
+                value === "true" ? true : false;
+              break;
+            }
+          }
+        }
+
+        new Gallery(options);
+      }
+    }
+  }
+
+  static use(galleryEl: HTMLElement) {
+    return (
+      (galleryEl as HTMLElement & { jsgElement: Gallery })?.jsgElement || null
+    );
   }
 
   updateNavButtons() {
@@ -202,7 +277,7 @@ export default class Gallery {
     mainImageContainerEl.classList.add("jsg-main-image");
     mainImageContainerEl.dataset.imageId = "0";
     mainImageContainerEl.addEventListener("click", (e: MouseEvent) => {
-      if (!this._options.modal.enable || !e.target || !e.currentTarget) return;
+      if (!this._options.modalEnable || !e.target || !e.currentTarget) return;
 
       const target = e.target as HTMLDivElement;
       const currentTarget = e.currentTarget as HTMLElement;
@@ -289,8 +364,8 @@ export default class Gallery {
       if (!target.classList.contains("jsg-extra-image")) return;
 
       if (
-        this._options.modal.enable &&
-        this._options.modal.clickExtraImageOpenModal
+        this._options.modalEnable &&
+        this._options.modalClickExtraImageOpenModal
       ) {
         this.#openGalleryModal(target);
       } else if (this._options.mainImage) {

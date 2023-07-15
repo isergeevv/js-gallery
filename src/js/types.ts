@@ -6,13 +6,9 @@ export type GalleryOptions = {
   excludeMainFromExtraImages?: boolean;
   transitionSpeed?: number;
   navButtons?: boolean;
-  modal: ModalOptions;
-};
-
-export type ModalOptions = {
-  enable: boolean;
-  clickExtraImageOpenModal?: boolean;
-  mainImageFollowModal?: boolean;
+  modalEnable: boolean;
+  modalClickExtraImageOpenModal?: boolean;
+  modalMainImageFollowModal?: boolean;
 };
 
 export type GalleryImage = {
@@ -28,5 +24,9 @@ export type Position = {
 export type Size = {
   width: number;
   height: number;
+};
+
+export type HTMLAttributes = {
+  [key: string]: string;
 };
 

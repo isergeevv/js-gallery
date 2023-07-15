@@ -126,7 +126,7 @@ export default class GalleryModal {
         this.#generateNavButtons();
       }
 
-      if (this._gallery.options.modal.mainImageFollowModal) {
+      if (this._gallery.options.modalMainImageFollowModal) {
         const mainImageContainer = this._gallery.mainImageContainer;
         mainImageContainer.dataset.imageId = id;
 
@@ -229,7 +229,7 @@ export default class GalleryModal {
         !!prevImageEl.parentElement?.previousElementSibling
       );
 
-      if (this._gallery.options.modal.mainImageFollowModal) {
+      if (this._gallery.options.modalMainImageFollowModal) {
         this._gallery.updateMainImage(src, prevImageId);
       }
     } else {
@@ -275,7 +275,7 @@ export default class GalleryModal {
         this.#toggleNavBtn(NAV_BUTTONS.RIGHT, false);
       }
 
-      if (this._gallery.options.modal.mainImageFollowModal) {
+      if (this._gallery.options.modalMainImageFollowModal) {
         this._gallery.updateMainImage(src, nextImageId);
       }
     } else {
@@ -495,7 +495,7 @@ export default class GalleryModal {
 
           this.#toggleNavBtn(NAV_BUTTONS.LEFT, !!target.previousElementSibling);
 
-          if (this._gallery.options.modal.mainImageFollowModal) {
+          if (this._gallery.options.modalMainImageFollowModal) {
             this._gallery.updateMainImage(clickImageSrc, clickImageID);
           }
         }

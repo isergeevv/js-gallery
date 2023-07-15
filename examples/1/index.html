@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 720px;
+        height: 650px;
+        margin: auto;
+      }
+
+      @media screen and (max-width: 720px) {
+        body {
+          width: 80vw;
+          height: 100vw;
+        }
+      }
+
+    </style>
+
+    <link rel="stylesheet" href="../../dist/css/style.css" />
+
+    <script src="../../dist/iife/index.js"></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div id="gallery">
+      <img src="../img/1.jpg" alt="1">
+      <img src="../img/2.jpg" alt="2">
+      <img src="../img/3.jpg" alt="3">
+      <img src="../img/4.jpg" alt="4">
+      <img src="../img/5.jpg" alt="5">
+      <img src="../img/6.jpg" alt="6">
+    </div>
+  </body>
+</html>
